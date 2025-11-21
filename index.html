@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Special Message by Arpit</title>
+    <style>
+        body {
+            /* बैकग्राउंड स्टाइल */
+            background: linear-gradient(135deg, #0f0a1c 0%, #3a0e66 50%, #0f0a1c 100%);
+            color: white;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden; /* फ्लोटिंग कणों के लिए महत्वपूर्ण */
+            text-align: center;
+            position: relative; /* कणों के लिए */
+        }
+
+        .section {
+            padding: 20px;
+            transition: opacity 1s, transform 1s; /* 1 सेकंड का ट्रांज़िशन */
+            opacity: 0;
+            transform: translateY(20px);
+            position: absolute; 
+            width: 90%;
+            max-width: 600px;
+            z-index: 2; /* कणों के ऊपर रहें */
+        }
+
+        .active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- "Let's Play" स्टाइल --- */
+        #intro-text {
+            font-size: 3em;
+            font-weight: bold;
+            color: #ffcc00; 
+            text-shadow: 0 0 15px rgba(255, 204, 0, 0.8);
+        }
+
+        /* --- लिरिक्स सेक्शन --- */
+        #lyric-section { 
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #ffffff;
+            margin: 0;
+            line-height: 1.5;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            transition: opacity 0.9s ease-in-out, transform 0.9s ease-in-out; 
+            min-height: 100px; 
+            margin-top: 50px;
+        }
+
+        /* **म्यूजिक ब्रेक स्टाइल** */
+        .music-break {
+            font-size: 3.5em !important; 
+            color: #00ffff !important; 
+            text-shadow: 0 0 15px rgba(0, 255, 255, 0.9) !important;
+            animation: pulse 1.5s infinite alternate; 
+        }
+        
+        /* पल्स एनिमेशन */
+        @keyframes pulse {
+            from { transform: scale(1); }
+            to { transform: scale(1.05); }
+        }
+        
+        /* खाली लिरिक्स लाइन को भी जगह देने के लिए */
+        .empty-line {
+            visibility: hidden;
+            content: " ";
+            height: 3em; 
+            display: block;
+        }
+
+        /* लिरिक्स बदलने के लिए ट्रांज़िशन क्लासेस */
+        .fade-out {
+            opacity: 0 !important;
+            transform: translateY(-10px);
+        }
+
+        .fade-in {
+            opacity: 1 !important;
+            transform: translateY(0);
+        }
+        
+        /* --- नया इमेज सेक्शन स्टाइल (टॉप सेंटर) --- */
+        #image-display-container {
+            position: absolute; 
+            top: 10vh; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 90%;
+            max-width: 150px; 
+            z-index: 10;
+            text-align: center;
+        }
+        
+        #lyric-image {
+            width: 80px; 
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+            opacity: 0; 
+            transition: opacity 0.9s ease-in-out; 
+        }
+
+        .image-visible {
+            opacity: 1;
+        }
+
+        /* --- अंतिम सेक्शन स्टाइल --- */
+        .small-text {
+            font-size: 0.8em; 
+            color: #aaaaaa;
+            margin-top: 5px;
+        }
+
+        .cute-image {
+            width: 150px;
+            margin-bottom: 20px;
+        }
+
+        /* --- फ्लोटिंग कणों के लिए CSS --- */
+        .floating-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            overflow: hidden;
+            pointer-events: none; 
+            z-index: 1; 
+        }
+
+        .floating-particle {
+            position: absolute;
+            bottom: -20px; 
+            opacity: 0;
+            animation: floatUp 8s ease-out forwards; 
+            font-size: 1.5em; 
+            color: #ffc0cb; 
+            text-shadow: 0 0 5px rgba(255, 255, 255, 0.5);
+            transform: translateX(0); 
+        }
+
+        .floating-particle.heart {
+            color: #ff69b4; 
+        }
+        .floating-particle.music {
+            color: #add8e6; 
+        }
+        .floating-particle.butterfly {
+            color: #ffe066; 
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) translateX(0) scale(0.5);
+                opacity: 0;
+            }
+            20% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            80% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(var(--float-x)) scale(1.2); 
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="song" src="_storage_emulated_0_Android_data_com.fawazapp.blackhole_files_DCIM_blackhole_WHVKL5L6G9.mp3"></audio>
+
+    <div id="intro-section" class="section">
+        <h1 id="intro-text">Let's Play</h1>
+    </div>
+
+    <div id="image-display-container" class="section">
+        <img id="lyric-image" src="https://i.ibb.co/7xZbwCny/552924c5d913f43785c58e07371f8e53.jpg" alt="Lyric Context Image">
+    </div>
+
+    <div id="lyric-section" class="section lyric-container">
+    </div>
+
+    <div id="final-section" class="section">
+        <img src="https://i.ibb.co/7xZbwCny/552924c5d913f43785c58e07371f8e53.jpg" alt="Cute Image" class="cute-image"> 
+        
+        <p class="small-text">Edit by Arpit</p>
+    </div>
+
+    <div class="floating-container" id="floating-particles-container"></div>
+
+    <script>
+        // **इमेज और लिरिक्स डेटा**
+        const newLyrics = [
+            { text: "चार चराग तेरे बलन हमेशा", image: "https://i.imgur.com/XqT2tJz.png" },
+            { text: " ", image: "" }, 
+            { text: "चार चराग तेरे बलन हमेशा", image: "https://i.imgur.com/8Qj9M0n.png" }, 
+            { text: "चार चराग तेरे बलन हमेशा", image: "" }, 
+            { text: "पंजुवां मैं बालन आई हूँ भला झूले लालन", image: "https://i.imgur.com/XqT2tJz.png" },
+            { text: "ओ पंजुवां मैं बालन", image: "" }, 
+            // म्यूजिक ब्रेक
+            { text: "MUSIC", image: "", isMusicBreak: true }, 
+            { text: "पंजुवां मैं बालन आई हूँ भला झूले लालन", image: "https://i.imgur.com/8Qj9M0n.png" }, 
+            { text: "सिंधड़ी दा, सेहवन दा सखी शाहबाज़ कलंदर", image: "" }
+        ];
+        
+        // **प्रत्येक लाइन के बीच का विलंब (delay) - MUSIC ब्रेक को 3000ms किया गया**
+        const lyricTimings = [
+            4500, // 1st line to gap
+            2000, // gap to 2nd line
+            3500, // 2nd line to 3rd line (repeat)
+            4000, // 3rd line to 4th line
+            4000, // 4th line to 5th line (repeat)
+            3500, // 5th line to MUSIC
+            3000, // **MUSIC ब्रेक का समय (3 सेकंड) - यहाँ बदला गया**
+            3000, // MUSIC से अगली लाइन तक का समय
+            8000  // अंतिम लाइन का समय
+        ];
+
+        // --- ट्रांज़िशन लॉजिक ---
+        const introSection = document.getElementById('intro-section');
+        const lyricSection = document.getElementById('lyric-section');
+        const finalSection = document.getElementById('final-section');
+        const song = document.getElementById('song');
+        const lyricImage = document.getElementById('lyric-image'); 
+        const imageContainer = document.getElementById('image-display-container'); 
+        const floatingParticlesContainer = document.getElementById('floating-particles-container');
+
+        // ट्रांज़िशन का विलंब (स्पीड)
+        const transitionDelay = 900; // लिरिक्स ट्रांज़िशन के लिए
+
+        // सभी सेक्शन को शुरू में छिपाना
+        finalSection.classList.remove('active');
+        lyricSection.classList.remove('active');
+        imageContainer.classList.remove('active');
+
+        // 1. "Let's Play" दिखाओ (यह CSS क्लास द्वारा नियंत्रित है)
+        introSection.classList.add('active');
+
+        // --- फ्लोटिंग कणों को जनरेट करने का फंक्शन ---
+        const particleTypes = [
+            { char: '❤️', className: 'heart' },
+            { char: '🎵', className: 'music' },
+            { char: '🦋', className: 'butterfly' }
+        ];
+
+        function createFloatingParticle() {
+            const particle = document.createElement('span');
+            const randomType = particleTypes[Math.floor(Math.random() * particleTypes.length)];
+            
+            particle.textContent = randomType.char;
+            particle.classList.add('floating-particle', randomType.className);
+            
+            const startX = Math.random() * (window.innerWidth - 30); 
+            particle.style.left = `${startX}px`;
+
+            const floatX = (Math.random() - 0.5) * 100; 
+            particle.style.setProperty('--float-x', `${floatX}px`);
+
+            particle.style.animationDelay = `${Math.random() * 2}s`;
+            particle.style.animationDuration = `${6 + Math.random() * 4}s`; 
+
+            floatingParticlesContainer.appendChild(particle);
+
+            particle.addEventListener('animationend', () => {
+                particle.remove();
+            });
+        }
+
+        let particleInterval;
+        function startParticleGeneration() {
+            particleInterval = setInterval(createFloatingParticle, 700); 
+        }
+        function stopParticleGeneration() {
+            clearInterval(particleInterval);
+        }
+        // --- फ्लोटिंग कण जनरेशन एंड ---
+
+        let currentLyricIndex = 0; // इसे showNextLyric के बाहर रखें
+
+        function showNextLyric() {
+            if (currentLyricIndex < newLyrics.length) {
+                
+                const currentLyricData = newLyrics[currentLyricIndex];
+                const currentDelay = lyricTimings[currentLyricIndex];
+
+                // 1. पुरानी लाइन और इमेज को अदृश्य (Fade-Out) करना
+                lyricSection.classList.remove('fade-in');
+                lyricSection.classList.add('fade-out');
+                lyricImage.classList.remove('image-visible');
+                lyricSection.classList.remove('music-break'); 
+                
+                // 2. ट्रांज़िशन के बाद कंटेंट बदलना और दिखाना
+                setTimeout(() => {
+                    // लिरिक्स को अपडेट करना
+                    lyricSection.textContent = currentLyricData.text;
+
+                    // MUSIC ब्रेक हैंडलिंग
+                    if (currentLyricData.isMusicBreak) {
+                        lyricSection.classList.add('music-break');
+                        lyricSection.classList.remove('empty-line');
+                    } else if (currentLyricData.text.trim() === "") {
+                        lyricSection.classList.add('empty-line');
+                    } else {
+                        lyricSection.classList.remove('empty-line');
+                    }
+
+                    // इमेज को अपडेट करना
+                    if (currentLyricData.image) {
+                        lyricImage.src = currentLyricData.image;
+                        lyricImage.classList.add('image-visible');
+                    } else {
+                        // यदि कोई इमेज नहीं है, तो पुरानी इमेज को अदृश्य करें
+                        lyricImage.src = "";
+                        lyricImage.classList.remove('image-visible'); 
+                    }
+                    
+                    // 3. नई लाइन को दृश्यमान (Fade-In) करना
+                    lyricSection.classList.remove('fade-out');
+                    lyricSection.classList.add('fade-in'); 
+                    
+                    currentLyricIndex++;
+                    
+                    // अगले लिरिक्स के लिए इंतज़ार
+                    setTimeout(showNextLyric, currentDelay); 
+                    
+                }, transitionDelay); 
+
+            } else {
+                // सभी लिरिक्स पूरे होने के बाद, संगीत बंद करें
+                song.pause();
+                song.currentTime = 0;
+                stopParticleGeneration(); // कण जनरेशन बंद करें
+
+                // 1. अंतिम लिरिक्स और इमेज को गायब (Fade-Out) करें
+                lyricSection.classList.remove('fade-in');
+                lyricSection.classList.add('fade-out');
+                lyricImage.classList.remove('image-visible');
+
+                // 2. ट्रांज़िशन समय के बाद फाइनल सेक्शन दिखाएं
+                setTimeout(() => {
+                    // लिरिक्स और इमेज सेक्शन को पूरी तरह छिपाना
+                    lyricSection.classList.remove('active'); 
+                    imageContainer.classList.remove('active');
+                    
+                    // 3. अंतिम सेक्शन दिखाना
+                    finalSection.classList.add('active');
+                }, transitionDelay);
+            }
+        }
+
+        function startSequence() {
+            // 1. गाना तुरंत बजाना शुरू करें (यह 'Let's Play' ट्रांज़िशन शुरू होने के साथ होता है)
+            song.play().catch(error => {
+                console.log("Audio playback failed:", error);
+            });
+
+            // 2. "Let's Play" हटाना शुरू करें (1000ms ट्रांज़िशन)
+            introSection.classList.remove('active');
+
+            // 3. 1000ms (ट्रांज़िशन खत्म होने का समय) इंतजार करें
+            setTimeout(() => {
+                // 4. लिरिक्स सेक्शन और इमेज कंटेनर को एक्टिव करें (दिखाना शुरू करें)
+                lyricSection.classList.add('active');
+                imageContainer.classList.add('active');
+                
+                // 5. 2000ms के बाद पहला लिरिक्स दिखाना शुरू करें और कण जनरेशन भी शुरू करें
+                // (गाना शुरू होने के 1000ms + 2000ms = 3000ms बाद पहला लिरिक्स दिखेगा)
+                setTimeout(() => {
+                    showNextLyric();
+                    startParticleGeneration();
+                }, 2000); 
+
+            }, 1000); // 1 सेकंड का विलंब (Let's Play ट्रांज़िशन खत्म होने के लिए)
+        }
+
+        // 2000ms (2 सेकंड) के बाद `startSequence` शुरू करो ताकि 'Let's Play' पहले 2 सेकंड तक दिख सके।
+        setTimeout(startSequence, 2000); 
+
+    </script>
+</body>
+</html>
